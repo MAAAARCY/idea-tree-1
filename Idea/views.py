@@ -4,45 +4,41 @@ from . import keywords
 from . import same
 
 def index(request):
-    same.keep.ptr.clear()
-    same.keep.point.clear()
-    same.keep.KeyCount.clear()
-    same.keep.flag = False
+    obj = same.keep()
+    obj.allclear()
+    obj.flag_reset()
     return render(request, 'Idea/index.html')
 
 def detail(request):
     try:
+        obj = same.keep()
         a = request.GET.get('key')
 
         if a == "":
             return render(request, 'Idea/error.html')
 
-        if a not in same.keep.KeyCount:
-            same.keep.ptr += keywords.word(a)
+        if a not in obj.get_ptr():
+            obj.check_flag_up()
+
+        if a not in obj.get_KeyCount():
+            #obj.get_ptr() += keywords.word(a)
+            obj.add_ptr(keywords.word(a))
             data = {
                 'key': request.GET.get('key'),
-                'data': same.keep.ptr,
-                'point': same.keep.point,
-                'flag': same.keep.flag,
+                'data': obj.get_ptr(),
+                'point': obj.get_point(),
+                'flag': obj.get_flag(),
             }
-            same.keep.KeyCount.append(a)
+            obj.KeyCount_append(a)
 
         else:
             data = {
                 'key': request.GET.get('key'),
-                'data': same.keep.ptr,
-                'point': same.keep.point,
-                'flag': same.keep.flag,
+                'data': obj.get_ptr(),
+                'point': obj.get_point(),
+                'flag': obj.get_flag(),
             }
 
         return render(request, 'Idea/index.html', data)
     except Exception:
         return render(request, 'Idea/error.html')
-
-    
-
-
-##メモ(returnするもの)
-##静的メンバのptr、受け取ったwordの番号(ptr.indexでさがせる)、APIでデータを追加する前の要素数
-##
-

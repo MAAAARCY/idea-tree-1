@@ -75,8 +75,6 @@ image_modal.style.display = 'flex';
 
 });
 
-
-
 network.on("click", function(params) {
   if (params.nodes.length == 1) {
     now_node_id = params.nodes;
